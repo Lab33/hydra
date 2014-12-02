@@ -106,5 +106,5 @@ for n in range(0,files):
 	log_actions(move_files[n],temp_show,str(seasons[n]),str(episodes[n]),'mv '+show_dir+temp_show+'/Season\ '+str(int(seasons[n])))
 	print new_season(shows[n],seasons[n])+'---'+ show_dir+temp_show+'/Season\ '+str(int(seasons[n]))+'---'+move_files[n]+' EPSIODE: '+episodes[n]
 
-
-
+#test
+#test test
