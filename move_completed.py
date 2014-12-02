@@ -23,7 +23,8 @@ def get_file_names():
 
 
 def move_show(filename,show,season):
-	dirShowName=show
+#	dirShowName=show
+	os.system('mv -v '+comp_dir+filename+' '+show_dir+show+'/Season\ '+season+'/')
 
 
 def check_dir(show):
@@ -104,7 +105,9 @@ for n in range(0,files):
 	temp_show = temp_show.replace(' ','\ ')
 
 	log_actions(move_files[n],temp_show,str(seasons[n]),str(episodes[n]),'mv '+show_dir+temp_show+'/Season\ '+str(int(seasons[n])))
-	print new_season(shows[n],seasons[n])+'---'+ show_dir+temp_show+'/Season\ '+str(int(seasons[n]))+'---'+move_files[n]+' EPSIODE: '+episodes[n]
+#	print new_season(shows[n],seasons[n])+'---'+ show_dir+temp_show+'/Season\ '+str(int(seasons[n]))+'---'+move_files[n]+' EPSIODE: '+episodes[n]
+	
+	move_show(move_files[n],temp_show,str(int(seasons[n])))
 
 #test
 #test test
