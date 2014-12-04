@@ -23,8 +23,7 @@ def get_file_names():
 
 
 def move_show(filename,show,season):
-#	dirShowName=show
-	os.system('mv -v '+comp_dir+filename+' '+show_dir+show+'/Season\ '+season+'/')
+#	os.system('mv -v '+comp_dir+filename+' '+show_dir+show+'/Season\ '+season+'/') ## Works just commented out for testing
 
 
 def check_dir(show):
