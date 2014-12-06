@@ -18,13 +18,15 @@ cursor = db.cursor()
 cursor.execute('''select node,address from nodes''')
 
 for row in cursor:
-	nodes.append(row[0])
-	addresses.append(row[1])
+    nodes.append(row[0])
+    addresses.append(row[1])
 
-def rsync_node(node,show):
-	pass
+
+def sync_node(node,show):
+    pass
+
 
 for i in range(0,len(nodes)):
-	print nodes[i]+' - '+addresses[i]
+    print nodes[i]+' - '+addresses[i]
 
 
