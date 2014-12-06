@@ -78,14 +78,14 @@ def get_nodes(node, database):
    db.close()
 
 def get_shows(node, database):
-   db2 = sqlite3.connect(database)
-   cursor = db2.cursor()
+   db = sqlite3.connect(database)
+   cursor = db.cursor()
    cursor.execute('''select node,show from active_shows where node=?''', (node,))
 
    for row in cursor:
       shows.append(row[1])
 
-   db2.close()
+   db.close()
 
 
 if __name__ == "__main__":
