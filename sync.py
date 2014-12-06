@@ -10,6 +10,8 @@ import os
 addresses = []
 nodes = []
 shows = []
+s_dir = []
+showdir = ''
 
 
 
@@ -17,15 +19,17 @@ def main(argv):
    node = ''
    sshlogin = ''
    dbname=''
+   loc = ''
+   remote=''
 
    try:
-      opts, args = getopt.getopt(argv,"hn:u:d:",["node=","user=","db="])
+      opts, args = getopt.getopt(argv,"hn:u:d:l:r:",["node=","user=","db=","loc=","remote="])
    except getopt.GetoptError:
-      print 'sync.py -n <node> -u <username> -d <sqlitedb>'
+      print 'sync.py -n <node> -u <username> -d <sqlitedb> -l <locdir> -r <remotedir>'
       sys.exit(2)
    for opt, arg in opts:
       if opt == '-h':
-         print 'sync.py -n <node> -u <username> -d <sqlitedb>'
+         print 'sync.py -n <node> -u <username> -d <sqlitedb> -l <locdir> -r <remotedir>'
          sys.exit()
       elif opt in ("-n", "--node"):
          node = arg
@@ -33,15 +37,28 @@ def main(argv):
          sshlogin = arg
       elif opt in ("-d", "--db"):
          dbname = arg
+      elif opt in ("-l","--locdir"):
+         loc = arg
+      elif opt in ("-r","--remotedir"):
+         remote = arg
 
    get_nodes(node, dbname)
    get_shows(node, dbname)
 
+
+   showdir = s_dir[0]
+
    for i in range(0, len(nodes)):
-      print nodes[i], ' --- ', addresses[i]
+      print nodes[i], ' --- ', addresses[i],' ---- ', showdir
+      address = addresses[i]
+
+
 
    for s in range(0, len(shows)):
-      print shows[s]
+       tempshow = shows[s]
+       tempshow = tempshow.replace(' ','\ ')
+
+       os.system("rsync -aP "+ loc+tempshow+"/ "+sshlogin+"@"+address+":"+showdir+"/")
 
 def sync():
    pass
@@ -50,12 +67,13 @@ def sync():
 def get_nodes(node, database):
    db = sqlite3.connect(database)
    cursor = db.cursor()
-   cursor.execute('''select node,address from nodes where node=?''', (node,))
+   cursor.execute('''select node,address, showdir from nodes where node=?''', (node,))
 
 
    for row in cursor:
       nodes.append(row[0])
       addresses.append(row[1])
+      s_dir.append(row[2])
 
    db.close()
 
