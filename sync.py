@@ -53,12 +53,16 @@ def main(argv):
       address = addresses[i]
 
 
+   show_string = ''
 
    for s in range(0, len(shows)):
        tempshow = shows[s]
        tempshow = tempshow.replace(' ','\ ')
+       show_string += loc+tempshow+' '
 
-       os.system("rsync -aP "+ loc+tempshow+"/ "+sshlogin+"@"+address+":"+showdir+"/")
+   #print show_string
+   #os.system("rsync -aP -e ssh "+ loc+tempshow+" "+sshlogin+"@"+address+":"+showdir)
+   os.system("rsync -aP -e ssh "+ show_string +" "+sshlogin+"@"+address+":"+showdir)
 
 def sync():
    pass
@@ -69,13 +73,13 @@ def get_nodes(node, database):
    cursor = db.cursor()
    cursor.execute('''select node,address, showdir from nodes where node=?''', (node,))
 
-
    for row in cursor:
       nodes.append(row[0])
       addresses.append(row[1])
       s_dir.append(row[2])
 
    db.close()
+
 
 def get_shows(node, database):
    db = sqlite3.connect(database)
