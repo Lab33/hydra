@@ -7,6 +7,8 @@ import sqlite3
 
 addresses = []
 nodes = []
+shows = []
+
 
 
 def main(argv):
@@ -30,27 +32,46 @@ def main(argv):
       elif opt in ("-d", "--db"):
          dbname = arg
 
-   get_nodes(dbname)
+   get_nodes(node, dbname)
+   get_shows(node, dbname)
+
    for i in range(0, len(nodes)):
       print nodes[i], ' --- ', addresses[i]
 
+   for s in range(0, len(shows)):
+      print shows[s]
+'''
    print 'node is "', node
    print 'username is "', sshlogin
    print 'db is "', dbname
-
+'''
 
 def sync(node,username,db):
    pass
 
 
-def get_nodes(database):
+def get_nodes(node, database):
    db = sqlite3.connect(database)
    cursor = db.cursor()
-   cursor.execute('''select node,address from nodes''')
+   cursor.execute('''select node,address from nodes where node=?''', (node,))
+
 
    for row in cursor:
       nodes.append(row[0])
       addresses.append(row[1])
+
+   db.close()
+
+def get_shows(node, database):
+   db2 = sqlite3.connect(database)
+   cursor = db2.cursor()
+   cursor.execute('''select node,show from active_shows where node=?''', (node,))
+
+   for row in cursor:
+      shows.append(row[1])
+
+   db2.close()
+
 
 if __name__ == "__main__":
    main(sys.argv[1:])
