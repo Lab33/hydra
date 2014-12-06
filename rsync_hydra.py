@@ -2,7 +2,22 @@
 
 
 import sqlite3
-import os
+import sys
+import getopt
+
+
+# import os
+
+'''
+def main(argv):
+	node =''
+	try:
+		opts, args = getopt.getopt(argv,'hi:o:',["node="])
+'''
+
+print 'Number of arguments: ', len(sys.argv), 'arguments.'
+print 'Argument List: ', str(sys.argv)
+
 
 db_name = 'hydra.db'
 loc = '/mnt/media/shows/'
