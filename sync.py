@@ -2,8 +2,10 @@
 
 __author__ = 'torall'
 
-import sys, getopt
+import sys
+import getopt
 import sqlite3
+import os
 
 addresses = []
 nodes = []
@@ -19,11 +21,11 @@ def main(argv):
    try:
       opts, args = getopt.getopt(argv,"hn:u:d:",["node=","user=","db="])
    except getopt.GetoptError:
-      print 'sync.py -n <node> -u <username> -d <sqlite db>'
+      print 'sync.py -n <node> -u <username> -d <sqlitedb>'
       sys.exit(2)
    for opt, arg in opts:
       if opt == '-h':
-         print 'sync.py -n <node> -u <username> -d <sqlite db>'
+         print 'sync.py -n <node> -u <username> -d <sqlitedb>'
          sys.exit()
       elif opt in ("-n", "--node"):
          node = arg
@@ -40,13 +42,8 @@ def main(argv):
 
    for s in range(0, len(shows)):
       print shows[s]
-'''
-   print 'node is "', node
-   print 'username is "', sshlogin
-   print 'db is "', dbname
-'''
 
-def sync(node,username,db):
+def sync():
    pass
 
 
