@@ -11,7 +11,6 @@ addresses = []
 nodes = []
 shows = []
 s_dir = []
-showdir = ''
 
 
 
