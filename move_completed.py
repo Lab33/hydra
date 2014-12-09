@@ -49,6 +49,11 @@ def clean_filename(filename):
 	else:
 		return 'not found','',''
 
+def new_show(show):
+	pass
+
+
+
 def new_season(show, season):
 	if os.path.isdir(show_dir+show+'/Season '+str(int(season))):
 		return 'Dir exist'
