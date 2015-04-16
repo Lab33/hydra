@@ -1,8 +1,29 @@
 import os
 import _mssql
 
+
+
 # Get user info
 who = (os.popen('whoami').readline())
+
+
+
+##### SQL TEMP!!!!
+
+conn = _mssql.connect(server='thanos', user='web', password='',database='hydra') # password needs to come from config file
+
+
+numemployees = conn.execute_scalar("SELECT COUNT(*) FROM vw_tv_shows")
+#numemployees = conn.execute_scalar("SELECT COUNT(*) FROM vw_tv_shows WHERE show_name LIKE 'J%'")    # note that '%' is not a special character here
+employeedata = conn.execute_row("SELECT * FROM vw_tv_shows WHERE show_id=%d", 13)
+
+
+
+print numemployees
+
+
+
+
 
 def main_menu():
     os.system('clear')
