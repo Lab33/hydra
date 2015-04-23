@@ -8,7 +8,6 @@ import re
 import datetime
 
 
-
 #########################################################
 ####### TO DO
 # - if the folder has a space the process will fail
@@ -17,6 +16,8 @@ import datetime
 regex = '[sS]+[0-9]+[eE]+[0-9]+[0-9]' # expression to find shows
 filelist = []
 configLocName = 'hydra.conf'
+
+
 
 # get local shell user
 who = (os.popen('whoami').readline())
@@ -74,46 +75,76 @@ if debug == '1':
 #list folders only 
 #ls -d */ | sed 's|[/]||g'
 
+def check_dir(testshow):
+    #print 'Checking if....'+testshow+' exists .... '+str(os.path.exists(showfolder+'/'+testshow))
+    testshow = testshow.replace(' ','\ ')
+#    if debug == '1':
+#        print 'showfolder: '+showfolder+' testshow: '+testshow
+
+    show_there=os.path.exists(showfolder+'/'+testshow)
+
+    return show_there
+
+def clean_filename(filename):
+        show = filename.replace('.',' ')
+        episode_code = re.search(regex,show)
+
+        if episode_code:
+                cut_off = (re.search(regex,show)).start()-1
+                clean_show = show[:cut_off]
+                ecode = episode_code.group()
+                clean_season = ecode[1:-3]
+                clean_episode = ecode[-2:]
+
+                return clean_show,clean_season,clean_episode
+        else:
+                return 'not found','',''
+
+
 def clean_torrents():
     for file in os.listdir(torrentfolder):
         filelist.append(file)
  
     for f in filelist:
-        show = f.replace('.',' ')
-        episode_code = re.search(regex,show)
-        cut_off = (re.search(regex,show))
+        clean_filename(f)
+        show, season,episode = clean_filename(f)
 
-        if episode_code:
-        	cut_off = (re.search(regex,show)).start()-1 
-        	show = show[:cut_off]
-        	ecode = episode_code.group()
-        	season = ecode[1:-3]
+        if show == 'not found':
+            continue
 
     	if season[:1] == '0':
             season = season[-1] # removes the leading zero from the season number
 
-#        os.system('ls '+torrentfolder+' | grep ',show)
-        print('ls '+showfolder+'/ | grep "'+show+'"')
-
-
-
-    	episode = ecode[-2:]
-        if debug == '1':
-            f = f.replace(' ','\ ')
-            print 'ls '+torrentfolder+'/'+f+' | grep "mkv\|mp4\|avi"'+ '---- Trying to filter out video files only'
-
-        file = (os.popen('ls '+torrentfolder+'/'+f+' | grep "mkv\|mp4\|avi"').readline())
-    	file = file.strip() # trim the file
-
-    	move_files = 'mv -v '+torrentfolder+'/'+f+'/'+file.replace(' ','\ ')+' '+showfolder+'/'+show.replace(' ','\ ')+'/Season\ '+season+'/'
-        rm_folders = 'rm -rf '+torrentfolder+'/'+f+'/'
-	
         if debug == '1':
             print '------------------------------------------'
             print 'Show: ', show
             print 'Season: ', season
             print 'Episode: ', episode
-        
+
+
+        if check_dir(show) is False:
+            print 'CREATE DIR!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+
+#       os.system('ls '+torrentfolder+' | grep ',show)
+        print('ls '+showfolder+'/ | grep "'+show+'"')
+
+        if debug == '1':
+            f = f.replace(' ','\ ')
+            print 'ls '+torrentfolder+'/'+f+' | grep "mkv\|mp4\|avi"'
+
+        try:
+            file = (os.popen('ls '+torrentfolder+'/'+f+' | grep "mkv\|mp4\|avi"').readline())
+            #sbreak
+        except ValueError:
+            print 'error...'
+            break
+
+    	file = file.strip() # trim the file
+
+    	move_files = 'mv -v '+torrentfolder+'/'+f+'/'+file.replace(' ','\ ')+' '+showfolder+'/'+show.replace(' ','\ ')+'/Season\ '+season+'/'
+        rm_folders = 'rm -rf '+torrentfolder+'/'+f+'/'
+
+        # remove
         # for debugging - print the statement instead of executing the comman
         if move == '1' and debug == '1':
             os.system(move_files)	# temp - should always try and move
@@ -124,7 +155,8 @@ def clean_torrents():
             print 'Move command: ', move_files
             print 'Remove command: ',rm_folders
     	#folder = f.replace(' ','\ ')
-        
+
+
         if debug == '1':
             print '------------------------------------------'
             print '\n'
@@ -139,3 +171,4 @@ if __name__ == "__main__":
 # to do #############################
 # - if there is a space in the torrent folder name the function to check if there is a video fails
 # - create a new var to hold the values of f and folder that are system friendly (have\ after\ each\ space)
+# - if the file begins with the release group then it stays in the show name .. look for [] ?
