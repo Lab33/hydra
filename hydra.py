@@ -85,6 +85,7 @@ def check_dir(testshow):
 
     return show_there
 
+
 def clean_filename(filename):
         show = filename.replace('.',' ')
         episode_code = re.search(regex,show)
@@ -99,6 +100,23 @@ def clean_filename(filename):
                 return clean_show,clean_season,clean_episode
         else:
                 return 'not found','',''
+
+
+def move_file(t_folder,t_file, show, season):
+    	t_file = t_file.strip() # trim the file
+    	move_files = 'mv -v '+torrentfolder+'/'+t_folder+'/'+t_file.replace(' ','\ ')+' '+showfolder+'/'+show.replace(' ','\ ')+'/Season\ '+season+'/'
+        rm_folders = 'rm -rf '+torrentfolder+'/'+t_folder+'/'
+
+        # remove
+        # for debugging - print the statement instead of executing the comman
+        if move == '1' and debug == '1':
+            os.system(move_files)	# temp - should always try and move
+            os.system(rm_folders)   # remove the parent folder to the show
+            print ' '
+
+        elif move == '0' and debug == '1':
+            print 'Move command: ', move_files
+            print 'Remove command: ',rm_folders
 
 
 def clean_torrents():
@@ -125,36 +143,24 @@ def clean_torrents():
         if check_dir(show) is False:
             print 'CREATE DIR!!!!!!!!!!!!!!!!!!!!!!!!!!!'
 
-#       os.system('ls '+torrentfolder+' | grep ',show)
-        print('ls '+showfolder+'/ | grep "'+show+'"')
+
+        if debug == '1':
+            print('ls '+showfolder+'/ | grep "'+show+'"')
+        else:
+            os.system('ls '+torrentfolder+' | grep "'+show+'"')
 
         if debug == '1':
             f = f.replace(' ','\ ')
             print 'ls '+torrentfolder+'/'+f+' | grep "mkv\|mp4\|avi"'
 
         try:
-            file = (os.popen('ls '+torrentfolder+'/'+f+' | grep "mkv\|mp4\|avi"').readline())
+            t_file = (os.popen('ls '+torrentfolder+'/'+f+' | grep "mkv\|mp4\|avi"').readline())
             #sbreak
         except ValueError:
             print 'error...'
             break
 
-    	file = file.strip() # trim the file
-
-    	move_files = 'mv -v '+torrentfolder+'/'+f+'/'+file.replace(' ','\ ')+' '+showfolder+'/'+show.replace(' ','\ ')+'/Season\ '+season+'/'
-        rm_folders = 'rm -rf '+torrentfolder+'/'+f+'/'
-
-        # remove
-        # for debugging - print the statement instead of executing the comman
-        if move == '1' and debug == '1':
-            os.system(move_files)	# temp - should always try and move
-            os.system(rm_folders)   # remove the parent folder to the show
-            print ' '
-
-        elif move == '0' and debug == '1':
-            print 'Move command: ', move_files
-            print 'Remove command: ',rm_folders
-    	#folder = f.replace(' ','\ ')
+        move_file(f,t_file,show,season)
 
 
         if debug == '1':
