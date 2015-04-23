@@ -12,6 +12,8 @@ import datetime
 ####### TO DO
 # - if the folder has a space the process will fail
 # - replace('.',' ') doesnt work with Marvel, going to have to add a special rule
+# - if the file begins with the release group then it stays in the show name .. look for [] ?
+
 
 regex = '[sS]+[0-9]+[eE]+[0-9]+[0-9]' # expression to find shows
 filelist = []
@@ -76,11 +78,7 @@ if debug == '1':
 #ls -d */ | sed 's|[/]||g'
 
 def check_dir(testshow):
-    #print 'Checking if....'+testshow+' exists .... '+str(os.path.exists(showfolder+'/'+testshow))
     testshow = testshow.replace(' ','\ ')
-#    if debug == '1':
-#        print 'showfolder: '+showfolder+' testshow: '+testshow
-
     show_there=os.path.exists(showfolder+'/'+testshow)
 
     return show_there
@@ -174,7 +172,3 @@ if __name__ == "__main__":
 
 
 
-# to do #############################
-# - if there is a space in the torrent folder name the function to check if there is a video fails
-# - create a new var to hold the values of f and folder that are system friendly (have\ after\ each\ space)
-# - if the file begins with the release group then it stays in the show name .. look for [] ?
