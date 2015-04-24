@@ -48,9 +48,9 @@ def ConfigSectionMap(section):
 
 # map settings
 provider = ConfigSectionMap("Database")['provider']
-host = ConfigSectionMap("Database")['host']
-user = ConfigSectionMap("Database")['user']
-password = ConfigSectionMap("Database")['pass']
+hostname = ConfigSectionMap("Database")['host']
+username = ConfigSectionMap("Database")['user']
+password_ = ConfigSectionMap("Database")['pass']
 db = ConfigSectionMap("Database")['db']
 debug = ConfigSectionMap("General")['debug']
 move = ConfigSectionMap("General")['move']
@@ -61,9 +61,9 @@ showfolder = ConfigSectionMap("NAS")['showfolder']
 if debug == '1':
     print '################ DEBUG  ######################'
     print 'Provider: ',provider
-    print 'Host: ', host
-    print 'User: ', user
-    print 'Password: ', password
+    print 'Host: ', hostname
+    print 'User: ', username
+    print 'Password: ', password_
     print 'Database: ', db
     print 'Debug: ', debug
     print 'Do Not Move: ', move
@@ -84,6 +84,20 @@ def check_dir(testshow):
     return show_there
 
 
+def log_sql(t_file,t_loc,action,details):
+    if provider == 'MSSQL':
+        # connection string
+        conn = pymssql.connect(host=hostname, user=username, password=password_, database=db)
+        cur = conn.cursor()
+        sqlCMD = 'exec sp_log_torrentmoves_Insert @t_file=%s,@t_loc=%s,@action=%s,@details=%s'
+
+        if debug == '1':
+            print 'writing to db....', sqlCMD
+
+        cur.execute(sqlCMD,(t_file,t_loc,action,details,))
+        conn.commit()
+        conn.close()
+
 def clean_filename(filename):
         show = filename.replace('.',' ')
         episode_code = re.search(regex,show)
@@ -100,20 +114,28 @@ def clean_filename(filename):
                 return 'not found','',''
 
 
+
 def move_file(t_folder,t_file, show, season):
     	t_file = t_file.strip() # trim the file
     	move_files = 'mv -v '+torrentfolder+'/'+t_folder+'/'+t_file.replace(' ','\ ')+' '+showfolder+'/'+show.replace(' ','\ ')+'/Season\ '+season+'/'
         rm_folders = 'rm -rf '+torrentfolder+'/'+t_folder+'/'
 
         # remove
-        # for debugging - print the statement instead of executing the comman
+        # for debugging - print the statement instead of executing the command
         if move == '1' and debug == '1':
-            os.system(move_files)	# temp - should always try and move
+            log_sql(t_file,t_folder,'MOVE','GOOD TO GO')
+            os.system(move_files)
+
+            log_sql(t_file,t_folder,'DELETE','GOOD TO GO')
             os.system(rm_folders)   # remove the parent folder to the show
+
             print ' '
 
         elif move == '0' and debug == '1':
+            log_sql(t_file,t_folder,'MOVE','GOOD TO GO')
             print 'Move command: ', move_files
+
+            log_sql(t_file,t_folder,'DELETE','GOOD TO GO')
             print 'Remove command: ',rm_folders
 
 
@@ -169,6 +191,3 @@ def clean_torrents():
 # Main
 if __name__ == "__main__":
     clean_torrents()
-
-
-
