@@ -1,11 +1,8 @@
 import ConfigParser
-import sys
 import os
-import commands
 import pymssql
 import sqlite3
 import re
-import datetime
 
 
 #########################################################
