@@ -16,8 +16,6 @@ regex = '[sS]+[0-9]+[eE]+[0-9]+[0-9]' # expression to find shows
 filelist = []
 configLocName = 'hydra.conf'
 
-
-
 # get local shell user
 who = (os.popen('whoami').readline())
 who = who.strip()
