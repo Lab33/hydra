@@ -4,11 +4,11 @@ import commands
 import pymssql
 
 ### init
-node = 'blackwidow'
-node_address = 'blackwidow.homeip.net'
-local_shows = '/mnt/shows/'
+node = ''
+node_address = ''
+local_shows = '/mnt/'
 remote_show_loc = ''
-remote_user = 'ryan'
+remote_user = ''
 
 debug = 1
 
@@ -16,7 +16,7 @@ n_shows = 0
 shows=[]
 
 # connection string
-conn = pymssql.connect(host='thanos', user='web', password='fr0zenfish!', database='hydra') # this needs to come from a config fie
+conn = pymssql.connect(host='', user='', password='!', database='') # this needs to come from a config fie
 cur = conn.cursor()
 
 cur.callproc('sp_ShowsToSync',(node,))
